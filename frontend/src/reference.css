@@ -606,9 +606,9 @@ ul, ol {
 
 .main-layout {
   display: grid;
-  grid-template-columns: var(--sidebar-width) 1fr var(--yaksha-width);
+  grid-template-columns: var(--sidebar-width) 1fr;
   gap: 20px;
-  max-width: 1520px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 48px var(--page-padding) 80px;
   align-items: start;
