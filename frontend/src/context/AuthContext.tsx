@@ -3,7 +3,21 @@ import type { ReactNode } from 'react';
 
 export type Role = 'student' | 'admin';
 
-export interface User {
+export interface UserProfile {
+  alternateEmail?: string;
+  mobile?: string;
+  collegeName?: string;
+  collegeAddress?: string;
+  collegeWebsite?: string;
+  departmentName?: string;
+  departmentWebpage?: string;
+  programme?: string;
+  branch?: string;
+  gpa?: string;
+  cvFileName?: string;
+}
+
+export interface User extends UserProfile {
   name: string;
   email: string;
   role: Role;
@@ -14,7 +28,8 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isAdmin: boolean;
   login: (email: string, role: Role) => Promise<void>;
-  signup: (name: string, email: string, role: Role) => Promise<void>;
+  signup: (name: string, email: string, role: Role, cvFileName?: string) => Promise<void>;
+  updateProfile: (data: Partial<UserProfile>) => void;
   logout: () => void;
 }
 
@@ -35,9 +50,22 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, [user]);
 
   const login = async (email: string, role: Role) => {
-    // Mock login delay
     await new Promise((resolve) => setTimeout(resolve, 500));
-    // Simulate user fetch from backend
+    
+    // Hardcoded mock admin user
+    if (role === 'admin' && email === 'admin@vins.in') {
+      setUser({
+        name: 'Super Admin',
+        email,
+        role,
+      });
+      return;
+    }
+
+    if (role === 'admin' && email !== 'admin@vins.in') {
+      throw new Error('Invalid admin credentials');
+    }
+
     setUser({
       name: email.split('@')[0],
       email,
@@ -45,14 +73,18 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     });
   };
 
-  const signup = async (name: string, email: string, role: Role) => {
-    // Mock signup delay
+  const signup = async (name: string, email: string, role: Role, cvFileName?: string) => {
     await new Promise((resolve) => setTimeout(resolve, 500));
     setUser({
       name,
       email,
       role,
+      cvFileName,
     });
+  };
+
+  const updateProfile = (data: Partial<UserProfile>) => {
+    setUser((prev) => prev ? { ...prev, ...data } : null);
   };
 
   const logout = () => {
@@ -67,6 +99,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         isAdmin: user?.role === 'admin',
         login,
         signup,
+        updateProfile,
         logout,
       }}
     >

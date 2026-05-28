@@ -11,7 +11,7 @@ interface FaqItem {
 interface FaqDashboardProps {
   faqs: FaqItem[];
   searchQuery: string;
-  setSearchQuery: (query: string) => void;
+
   activeCategory: string;
   setActiveCategory: (category: string) => void;
   distinctCategories: string[];
@@ -22,14 +22,14 @@ interface FaqDashboardProps {
 export const FaqDashboard: React.FC<FaqDashboardProps> = ({
   faqs,
   searchQuery,
-  setSearchQuery,
+
   activeCategory,
   setActiveCategory,
   distinctCategories,
   numbersMap,
   sectionNumbersMap,
 }) => {
-  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
 
   const categoriesList = useMemo(() => {
     return ['All', ...distinctCategories];
@@ -47,7 +47,24 @@ export const FaqDashboard: React.FC<FaqDashboardProps> = ({
   }, [faqs, activeCategory, searchQuery]);
 
   const toggleExpanded = (id: string) => {
-    setExpandedId(expandedId === id ? null : id);
+    setExpandedIds(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
+
+  const expandAll = () => {
+    const allIds = new Set(filteredFaqs.map(f => f._id));
+    setExpandedIds(allIds);
+  };
+
+  const collapseAll = () => {
+    setExpandedIds(new Set());
   };
 
   // Group filtered FAQs by category for section rendering, sorted by stable order
@@ -65,23 +82,11 @@ export const FaqDashboard: React.FC<FaqDashboardProps> = ({
       .map((cat) => [cat, grouped[cat]] as [string, FaqItem[]]);
   }, [filteredFaqs, distinctCategories]);
 
+  const allExpanded = expandedIds.size > 0 && expandedIds.size === filteredFaqs.length;
+
   return (
     <div className="faq-main">
-      {/* Inline Search Bar */}
-      <div className="search-container" style={{ marginBottom: '16px' }}>
-        <svg className="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
-        </svg>
-        <input
-          type="search"
-          id="faq-search"
-          placeholder="Search FAQ — try NOC, stipend, certificate…"
-          aria-label="Search FAQ"
-          autoComplete="off"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-      </div>
+
 
       {/* Category Filter Pills */}
       <div className="category-filters">
@@ -102,16 +107,27 @@ export const FaqDashboard: React.FC<FaqDashboardProps> = ({
           Showing <strong>{filteredFaqs.length}</strong> question{filteredFaqs.length !== 1 ? 's' : ''}
           {activeCategory !== 'All' ? ` in ${activeCategory}` : ''}
         </p>
-        <div className="faq-controls-right">
+        <div className="faq-controls-right" style={{ display: 'flex', gap: '12px' }}>
           <button
             type="button"
             className="control-btn"
-            onClick={() => setExpandedId(null)}
+            onClick={allExpanded ? collapseAll : expandAll}
           >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M17 11l-5-5-5 5M17 18l-5-5-5 5" />
-            </svg>
-            Collapse all
+            {allExpanded ? (
+              <>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M17 11l-5-5-5 5M17 18l-5-5-5 5" />
+                </svg>
+                Collapse all
+              </>
+            ) : (
+              <>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M17 13l-5 5-5-5M17 6l-5 5-5-5" />
+                </svg>
+                Expand all
+              </>
+            )}
           </button>
         </div>
       </div>
@@ -141,32 +157,35 @@ export const FaqDashboard: React.FC<FaqDashboardProps> = ({
               <span className="section-count">{items.length}</span>
             </div>
 
-            {items.map((faq) => (
-              <div
-                key={faq._id}
-                className={`faq-item${expandedId === faq._id ? ' active' : ''}`}
-              >
-                <button
-                  className="faq-question"
-                  aria-expanded={expandedId === faq._id}
-                  onClick={() => toggleExpanded(faq._id)}
+            {items.map((faq) => {
+              const isExpanded = expandedIds.has(faq._id);
+              return (
+                <div
+                  key={faq._id}
+                  className={`faq-item${isExpanded ? ' active' : ''}`}
                 >
-                  <span className="q-number">{numbersMap[faq._id]}</span>
-                  <span className="q-text">{faq.question}</span>
-                  <span className="chevron-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="6 9 12 15 18 9" />
-                    </svg>
-                  </span>
-                </button>
-                <div className="faq-answer" role="region">
-                  <div 
-                    className="answer-content"
-                    dangerouslySetInnerHTML={{ __html: faq.answer }}
-                  />
+                  <button
+                    className="faq-question"
+                    aria-expanded={isExpanded}
+                    onClick={() => toggleExpanded(faq._id)}
+                  >
+                    <span className="q-number">{numbersMap[faq._id]}</span>
+                    <span className="q-text">{faq.question}</span>
+                    <span className="chevron-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="6 9 12 15 18 9" />
+                      </svg>
+                    </span>
+                  </button>
+                  <div className="faq-answer" role="region">
+                    <div 
+                      className="answer-content"
+                      dangerouslySetInnerHTML={{ __html: faq.answer }}
+                    />
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </section>
         );
       })}

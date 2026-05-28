@@ -62,7 +62,7 @@
 
   /* Layout */
   --header-height: 64px;
-  --sidebar-width: 210px;
+  --sidebar-width: 550px;
   --yaksha-width: 340px;
   --content-max: 820px;
   --page-padding: 24px;
@@ -528,12 +528,12 @@ ul, ol {
 .category-filters {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 8px;
   flex-wrap: wrap;
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 0 var(--page-padding);
+  max-width: none;
+  margin: 0 0 24px 0;
+  padding: 0;
 }
 
 .category-pill {

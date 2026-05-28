@@ -124,12 +124,25 @@ export const FaqPage: React.FC = () => {
     <>
       <section className="hero" id="hero">
         <div className="hero-inner">
-          <p className="hero-badge">IIT Ropar · Applied AI · Open-Source</p>
-          <h1 className="hero-title">Frequently Asked<br />Questions</h1>
+          <h1 className="hero-title" style={{ color: 'var(--accent)' }}>Frequently Asked<br />Questions</h1>
           <p className="hero-subtitle">
             Everything you need to know about the Vicharanashala Internship Programme (VINS).
             Search or browse by category below.
           </p>
+          <div className="search-container" style={{ marginTop: '24px', maxWidth: '600px', margin: '24px auto 0' }}>
+            <svg className="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <input
+              type="search"
+              id="faq-search"
+              placeholder="Search FAQ — try NOC, stipend, certificate…"
+              aria-label="Search FAQ"
+              autoComplete="off"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
         </div>
       </section>
 
@@ -195,7 +208,7 @@ export const FaqPage: React.FC = () => {
         <FaqDashboard
           faqs={faqs}
           searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
+
           activeCategory={activeCategory}
           setActiveCategory={setActiveCategory}
           distinctCategories={distinctCategories}

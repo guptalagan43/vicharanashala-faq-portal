@@ -20,27 +20,27 @@
   left: 50%;
   transform: translate(-50%, -50%);
   width: 100%;
-  max-width: 800px;
-  height: 800px;
-  background: radial-gradient(circle, rgba(160, 80, 220, 0.05) 0%, transparent 60%);
+  max-width: 1000px;
+  height: 1000px;
+  background: radial-gradient(circle, rgba(240, 192, 64, 0.05) 0%, transparent 70%);
   pointer-events: none;
   z-index: 0;
 }
 
 .chat-container {
   width: 100%;
-  max-width: 720px;
+  max-width: 900px;
   height: calc(100vh - var(--header-height) - 80px);
-  min-height: 500px;
-  background: rgba(14, 14, 22, 0.55);
+  min-height: 600px;
+  background: rgba(14, 14, 22, 0.7);
   backdrop-filter: blur(24px) saturate(1.3);
   -webkit-backdrop-filter: blur(24px) saturate(1.3);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--radius-lg);
-  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(240, 192, 64, 0.05);
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(240, 192, 64, 0.05);
   position: relative;
   z-index: 1;
-  animation: fadeInUp 0.4s ease both;
+  animation: fadeInUp 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -56,8 +56,56 @@
   border-radius: 0;
 }
 
-.chat-container .yaksha-body {
-  padding: 24px;
+.chat-container .yaksha-dashboard .yaksha-header {
+  padding: 24px 32px;
+  background: rgba(14, 14, 22, 0.9);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.chat-container .yaksha-dashboard .yaksha-messages {
+  padding: 32px;
+  gap: 24px;
+}
+
+.chat-container .yaksha-dashboard .yaksha-input-area {
+  margin: 24px 32px;
+  padding: 12px 24px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 100px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.chat-container .yaksha-dashboard .yaksha-input-area:focus-within {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(240, 192, 64, 0.3);
+  box-shadow: 0 0 0 3px rgba(240, 192, 64, 0.1), 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.chat-container .yaksha-dashboard .yaksha-msg--user {
+  flex-direction: row-reverse;
+}
+
+.chat-container .yaksha-dashboard .yaksha-msg--user .yaksha-bubble {
+  background: var(--accent);
+  color: #000;
+  border-radius: 20px 20px 4px 20px;
+  padding: 12px 20px;
+  font-size: 15px;
+  box-shadow: 0 4px 12px rgba(240, 192, 64, 0.2);
+}
+
+.chat-container .yaksha-dashboard .yaksha-msg--bot .yaksha-bubble {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px 20px 20px 4px;
+  padding: 16px 24px;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.chat-container .yaksha-dashboard .yaksha-msg {
+  max-width: 85%;
 }
 
 @media (max-width: 640px) {
@@ -70,8 +118,15 @@
     height: calc(100vh - var(--header-height));
     min-height: 0;
     border-radius: 0;
-    border-left: none;
-    border-right: none;
-    border-bottom: none;
+    border: none;
+  }
+  
+  .chat-container .yaksha-dashboard .yaksha-header,
+  .chat-container .yaksha-dashboard .yaksha-messages,
+  .chat-container .yaksha-dashboard .yaksha-input-area {
+    padding-left: 16px;
+    padding-right: 16px;
+    margin-left: 16px;
+    margin-right: 16px;
   }
 }

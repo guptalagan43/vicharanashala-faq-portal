@@ -6,6 +6,8 @@ import { ChatPage } from './pages/ChatPage';
 import { LoginPage } from './pages/LoginPage';
 import { SignupPage } from './pages/SignupPage';
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
+import { ProfilePage } from './pages/ProfilePage';
+import { PlaceholderPage } from './pages/PlaceholderPage';
 
 const rootRoute = createRootRoute({
   component: Layout,
@@ -47,6 +49,18 @@ const forgotPasswordRoute = createRoute({
   component: ForgotPasswordPage,
 });
 
+const profileRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/profile',
+  component: ProfilePage,
+});
+
+const announcementsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/announcements',
+  component: () => <PlaceholderPage title="Announcements" />,
+});
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   faqRoute,
@@ -54,6 +68,8 @@ const routeTree = rootRoute.addChildren([
   loginRoute,
   signupRoute,
   forgotPasswordRoute,
+  profileRoute,
+  announcementsRoute,
 ]);
 
 export const router = createRouter({ routeTree });
