@@ -145,9 +145,9 @@ body::before {
   inset: 0;
   background:
     radial-gradient(ellipse 90% 45% at 50% -10%, rgba(240, 192, 64, 0.06) 0%, transparent 55%),
-    radial-gradient(ellipse 50% 55% at 10% 50%, rgba(80, 60, 180, 0.04) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 55% at 90% 50%, rgba(64, 180, 240, 0.035) 0%, transparent 60%),
-    radial-gradient(ellipse 70% 30% at 70% 100%, rgba(160, 80, 220, 0.03) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 55% at 10% 50%, rgba(240, 192, 64, 0.03) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 55% at 90% 50%, rgba(240, 192, 64, 0.025) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 30% at 70% 100%, rgba(240, 192, 64, 0.02) 0%, transparent 50%),
     radial-gradient(ellipse 60% 25% at 30% 100%, rgba(240, 192, 64, 0.025) 0%, transparent 50%);
   pointer-events: none;
   z-index: 0;
@@ -158,8 +158,8 @@ body::after {
   position: fixed;
   inset: 0;
   background:
-    radial-gradient(circle 600px at 15% 20%, rgba(100, 60, 220, 0.025) 0%, transparent 100%),
-    radial-gradient(circle 500px at 85% 80%, rgba(60, 180, 240, 0.02) 0%, transparent 100%);
+    radial-gradient(circle 600px at 15% 20%, rgba(240, 192, 64, 0.02) 0%, transparent 100%),
+    radial-gradient(circle 500px at 85% 80%, rgba(240, 192, 64, 0.015) 0%, transparent 100%);
   pointer-events: none;
   z-index: 0;
   animation: ambientShift 25s ease-in-out infinite alternate;
@@ -2432,21 +2432,28 @@ mark.highlight,
   align-items: center;
 }
 
-/* ═══════════════════════════════════════════════════
-   YAKSHA-MINI AI CHATBOT SIDEBAR
-   ═══════════════════════════════════════════════════ */
-
 .yaksha-sidebar {
   position: fixed;
-  bottom: 24px;
+  top: 88px;
+  bottom: auto;
   right: 24px;
   width: var(--yaksha-width);
   height: 540px;
-  max-height: calc(100vh - 48px);
+  max-height: calc(100vh - 112px);
   display: flex;
   flex-direction: column;
   min-height: 0;
   z-index: 99;
+}
+
+.yaksha-desktop-container {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .yaksha-desktop-container {
+    display: none !important;
+  }
 }
 
 .yaksha-sticky {
@@ -3382,5 +3389,28 @@ mark.highlight,
   }
 }
 
+/* Close button inside modal header */
+.yaksha-modal-close-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.06));
+  color: var(--text-muted, #5a5a6e);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+  flex-shrink: 0;
+}
 
+.yaksha-modal-close-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--text-primary, #e8e8ed);
+}
 
+.yaksha-modal-close-btn svg {
+  width: 14px;
+  height: 14px;
+}

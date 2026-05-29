@@ -1,5 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import axios from 'axios';
+import FAQPromoterCard from './admin/faq/FAQPromoterCard';
+import '../styles/admin.css';
 
 interface FaqItem {
   _id: string;
@@ -25,6 +27,7 @@ interface FaqDashboardProps {
   isAdmin?: boolean;
   activeTab?: string;
   isLoading?: boolean;
+  onRefreshFaqs?: () => void;
 }
 
 export const FaqDashboard: React.FC<FaqDashboardProps> = ({
@@ -41,8 +44,22 @@ export const FaqDashboard: React.FC<FaqDashboardProps> = ({
   isAdmin = false,
   activeTab = 'all',
   isLoading = false,
+  onRefreshFaqs,
 }) => {
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
+  const [showAddModal, setShowAddModal] = useState(false);
+
+  const handleCreateFaq = async (data: { question: string; answer: string; category: string }) => {
+    try {
+      await axios.post('http://localhost:3001/api/faqs', data);
+      setShowAddModal(false);
+      if (onRefreshFaqs) {
+        onRefreshFaqs();
+      }
+    } catch (err) {
+      console.error('Failed to create FAQ:', err);
+    }
+  };
 
   const categoriesList = useMemo(() => {
     return ['All', ...distinctCategories];
@@ -235,7 +252,29 @@ export const FaqDashboard: React.FC<FaqDashboardProps> = ({
           Showing <strong>{filteredFaqs.length}</strong> question{filteredFaqs.length !== 1 ? 's' : ''}
           {activeTab === 'all' && activeCategory !== 'All' ? ` in ${activeCategory}` : ''}
         </p>
-        <div className="faq-controls-right" style={{ display: 'flex', gap: '12px' }}>
+        <div className="faq-controls-right" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+          {isAdmin && (
+            <button
+              type="button"
+              className="control-btn"
+              onClick={() => setShowAddModal(true)}
+              style={{
+                background: 'var(--accent)',
+                color: 'var(--bg-primary)',
+                borderColor: 'var(--accent)',
+                fontWeight: 600,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ width: '14px', height: '14px' }}>
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+              Add New FAQ
+            </button>
+          )}
           <button
             type="button"
             className="control-btn"
@@ -300,6 +339,19 @@ export const FaqDashboard: React.FC<FaqDashboardProps> = ({
             const isExpanded = expandedIds.has(faq._id);
             return renderFaqItem(faq, isExpanded, idx);
           })}
+        </div>
+      )}
+
+      {showAddModal && (
+        <div className="admin-modal-overlay" style={{ zIndex: 1100 }} onClick={() => setShowAddModal(false)}>
+          <div className="admin-modal" style={{ width: '100%', maxWidth: '600px' }} onClick={(e) => e.stopPropagation()}>
+            <FAQPromoterCard
+              mode="create"
+              categories={distinctCategories}
+              onSubmit={handleCreateFaq}
+              onCancel={() => setShowAddModal(false)}
+            />
+          </div>
         </div>
       )}
     </div>

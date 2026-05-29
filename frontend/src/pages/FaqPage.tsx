@@ -67,7 +67,7 @@ export const FaqPage: React.FC = () => {
     }
   }, [faqs, activeTab, isAuthenticated, bookmarkedIds]);
 
-  useEffect(() => {
+  const fetchFaqsData = () => {
     setIsLoading(true);
     axios.get<FaqItem[]>('http://localhost:3001/api/faqs')
       .then((response) => {
@@ -78,6 +78,10 @@ export const FaqPage: React.FC = () => {
         console.error('Error fetching FAQs:', error);
         setIsLoading(false);
       });
+  };
+
+  useEffect(() => {
+    fetchFaqsData();
   }, []);
 
   // Compute stable categories, question numbers, and section numbers
@@ -339,6 +343,7 @@ export const FaqPage: React.FC = () => {
               isAdmin={isAdmin}
               activeTab={activeTab}
               isLoading={isLoading}
+              onRefreshFaqs={fetchFaqsData}
             />
           </>
         )}

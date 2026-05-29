@@ -10,6 +10,8 @@ import {
   Clock,
   MessageSquare,
   ArrowUpRight,
+  Globe,
+  Calendar,
 } from 'lucide-react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -270,19 +272,49 @@ export const LandingPage: React.FC = () => {
 
         <div className="programme-grid reveal-up" style={{ marginTop: '40px' }}>
           <div className="programme-card">
-            <h3>VINS — Online</h3>
-            <p>
-              <strong>Vicharanashala Internship.</strong> Open to every candidate
-              who performed well in the AI interview. Conducted entirely online — you work
-              from your own location.
+            <div className="programme-card-header">
+              <h3>VINS — Online</h3>
+              <span className="programme-badge">
+                <span className="programme-badge-dot" />
+                100% Online · 2026 Intake
+              </span>
+            </div>
+            
+            <p className="programme-card-lead">
+              <strong>Vicharanashala Internship.</strong> Open to every candidate who performed well in the AI interview. Gain hands-on engineering experience in applied AI and open-source software.
             </p>
-            <p style={{ marginTop: '12px' }}>
-              Start anytime in 2026. Two-month duration with a one-month grace period.
-              Everything must finish by 31 December 2026.
-            </p>
-            <p style={{ marginTop: '12px' }}>
-              <em>No stipend.</em> The programme itself is free for you — we charge nothing.
-            </p>
+
+            <div className="programme-features-grid">
+              <div className="programme-feature-item">
+                <div className="programme-feature-icon">
+                  <Globe size={18} />
+                </div>
+                <div>
+                  <h4>Format</h4>
+                  <p>Conducted entirely online — you work from your own location.</p>
+                </div>
+              </div>
+
+              <div className="programme-feature-item">
+                <div className="programme-feature-icon">
+                  <Calendar size={18} />
+                </div>
+                <div>
+                  <h4>Timeline</h4>
+                  <p>Start anytime in 2026. Two-month duration with a one-month grace period. Ends Dec 31, 2026.</p>
+                </div>
+              </div>
+
+              <div className="programme-feature-item">
+                <div className="programme-feature-icon">
+                  <Shield size={18} />
+                </div>
+                <div>
+                  <h4>Cost & Stipend</h4>
+                  <p>No stipend. The programme is completely free — we charge nothing.</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
