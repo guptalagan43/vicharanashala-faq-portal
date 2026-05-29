@@ -21,6 +21,7 @@ export const FaqPage: React.FC = () => {
   const [activeTocSection, setActiveToc] = useState('s-1');
   const [activeTab, setActiveTab] = useState<'all' | 'most-asked' | 'latest' | 'bookmarked'>('all');
   const [bookmarkedIds, setBookmarkedIds] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const { user, isAuthenticated, isAdmin } = useAuth();
 
@@ -53,8 +54,10 @@ export const FaqPage: React.FC = () => {
           .sort((a, b) => (b.view_count || 0) - (a.view_count || 0))
           .slice(0, 10);
       case 'latest':
-        // Sort by _id descending (ObjectId creation order)
-        return [...faqs].sort((a, b) => b._id.localeCompare(a._id));
+        // Sort by _id descending (ObjectId creation order) and limit to max 7
+        return [...faqs]
+          .sort((a, b) => b._id.localeCompare(a._id))
+          .slice(0, 7);
       case 'bookmarked':
         if (!isAuthenticated) return [];
         return faqs.filter((f) => bookmarkedIds.includes(f._id));
@@ -65,12 +68,15 @@ export const FaqPage: React.FC = () => {
   }, [faqs, activeTab, isAuthenticated, bookmarkedIds]);
 
   useEffect(() => {
+    setIsLoading(true);
     axios.get<FaqItem[]>('http://localhost:3001/api/faqs')
       .then((response) => {
         setFaqs(response.data);
+        setIsLoading(false);
       })
       .catch((error) => {
         console.error('Error fetching FAQs:', error);
+        setIsLoading(false);
       });
   }, []);
 
@@ -268,7 +274,7 @@ export const FaqPage: React.FC = () => {
         </div>
       )}
 
-      <div className={`main-layout ${activeTab !== 'all' ? 'full-width-layout' : ''}`} id="main-layout">
+      <div className={`main-layout ${activeTab !== 'all' && !isLoading ? 'full-width-layout' : ''}`} id="main-layout">
         {activeTab === 'bookmarked' && !isAuthenticated ? (
           <div className="login-promo-card">
             <div className="promo-logo">
@@ -289,7 +295,18 @@ export const FaqPage: React.FC = () => {
           </div>
         ) : (
           <>
-            {activeTab === 'all' && (
+            {isLoading ? (
+              <aside className="toc-sidebar" id="toc-sidebar">
+                <div className="toc-sticky">
+                  <div className="skeleton-pulse" style={{ height: '24px', width: '100px', borderRadius: '4px', marginBottom: '24px' }}></div>
+                  <nav className="toc-nav" id="toc-nav" style={{ gap: '16px', display: 'flex', flexDirection: 'column' }}>
+                    {[1, 2, 3, 4, 5, 6].map(i => (
+                      <div key={i} className="skeleton-pulse" style={{ height: '18px', width: `${90 - i * 5}%`, borderRadius: '4px' }} />
+                    ))}
+                  </nav>
+                </div>
+              </aside>
+            ) : activeTab === 'all' && (
               <aside className="toc-sidebar" id="toc-sidebar">
                 <div className="toc-sticky">
                   <h2 className="toc-heading">Contents</h2>
@@ -324,6 +341,7 @@ export const FaqPage: React.FC = () => {
               isAdmin={isAdmin}
               activeTab={activeTab}
               onFaqAdded={handleFaqAdded}
+              isLoading={isLoading}
             />
           </>
         )}

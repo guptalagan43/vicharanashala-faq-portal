@@ -25,6 +25,7 @@ interface FaqDashboardProps {
   isAdmin?: boolean;
   activeTab?: string;
   onFaqAdded?: (newFaq: FaqItem) => void;
+  isLoading?: boolean;
 }
 
 export const FaqDashboard: React.FC<FaqDashboardProps> = ({
@@ -41,6 +42,7 @@ export const FaqDashboard: React.FC<FaqDashboardProps> = ({
   isAdmin = false,
   activeTab = 'all',
   onFaqAdded,
+  isLoading = false,
 }) => {
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
   const [showAddForm, setShowAddForm] = useState(false);
@@ -192,6 +194,50 @@ export const FaqDashboard: React.FC<FaqDashboardProps> = ({
       </div>
     );
   };
+
+  if (isLoading) {
+    return (
+      <div className="faq-main">
+        {/* Skeleton Category Pills (Only on All tab) */}
+        {activeTab === 'all' && (
+          <div className="category-filters" style={{ display: 'flex', gap: '10px' }}>
+            {[1, 2, 3, 4, 5].map(i => (
+              <div key={i} className="skeleton-pulse" style={{ height: '38px', width: i === 1 ? '100px' : '140px', borderRadius: '100px' }} />
+            ))}
+          </div>
+        )}
+
+        {/* Skeleton FAQ Controls */}
+        <div className="faq-controls">
+          <div className="skeleton-pulse" style={{ height: '20px', width: '150px', borderRadius: '4px' }} />
+          <div className="skeleton-pulse" style={{ height: '36px', width: '120px', borderRadius: '4px' }} />
+        </div>
+
+        {/* Skeleton FAQ items */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginTop: '24px' }}>
+          {[1, 2, 3, 4, 5].map(i => (
+            <div key={i} className="skeleton-pulse" style={{ 
+              height: '62px', 
+              width: '100%', 
+              borderRadius: 'var(--radius)',
+              display: 'flex',
+              alignItems: 'center',
+              padding: '0 20px',
+              justifyContent: 'space-between',
+              background: 'rgba(255,255,255,0.02)',
+              border: '1px solid rgba(255,255,255,0.03)'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flex: 1 }}>
+                <div style={{ height: '14px', width: '24px', borderRadius: '4px' }} />
+                <div style={{ height: '16px', width: `${60 + (i % 3) * 10}%`, borderRadius: '4px' }} />
+              </div>
+              <div style={{ height: '16px', width: '16px', borderRadius: '50%' }} />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="faq-main">

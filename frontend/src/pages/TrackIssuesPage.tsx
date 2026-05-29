@@ -148,10 +148,8 @@ export const TrackIssuesPage: React.FC = () => {
 
   // Track stats
   const totalRaised = issues.length;
-  const resolvedCount = issues.filter(i => i.status === 'resolved').length;
   const reviewCount = issues.filter(i => i.status === 'review').length;
   const queueCount = issues.filter(i => i.status === 'queue').length;
-  const spurtiPoints = resolvedCount * 25 + reviewCount * 10;
 
   // Handle posting a reply inside the current issue thread
   const handlePostReply = (e: React.FormEvent) => {
@@ -203,7 +201,7 @@ export const TrackIssuesPage: React.FC = () => {
         </div>
 
         {/* Stats Row */}
-        <div className="portal-stats-row">
+        <div className="portal-stats-row" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
           <div className="portal-stat-card">
             <div className="portal-stat-label">Total Issues</div>
             <div className="portal-stat-value">{totalRaised} <span className="portal-stat-unit">Submitted</span></div>
@@ -215,10 +213,6 @@ export const TrackIssuesPage: React.FC = () => {
           <div className="portal-stat-card">
             <div className="portal-stat-label">Under Review</div>
             <div className="portal-stat-value" style={{ color: '#bf5af2' }}>{reviewCount} <span className="portal-stat-unit">Approving</span></div>
-          </div>
-          <div className="portal-stat-card">
-            <div className="portal-stat-label">Spurti Earned</div>
-            <div className="portal-stat-value" style={{ color: '#34c759' }}>+{spurtiPoints} <span className="portal-stat-unit">Points</span></div>
           </div>
         </div>
 

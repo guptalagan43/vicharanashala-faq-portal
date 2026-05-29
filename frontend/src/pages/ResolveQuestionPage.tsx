@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { ArrowLeft, Send, CheckCircle2, MessageSquare, Award, Sparkles, BookOpen, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Send, CheckCircle2, MessageSquare, Sparkles, BookOpen, AlertCircle } from 'lucide-react';
 import { Link, useNavigate } from '@tanstack/react-router';
 import '../styles/portal.css';
 
@@ -71,7 +71,6 @@ export const ResolveQuestionPage: React.FC = () => {
   const [selectedIssueId, setSelectedIssueId] = useState<string | null>(null);
   const [answerText, setAnswerText] = useState('');
   const [isAnswered, setIsAnswered] = useState(false);
-  const [pointsEarned, setPointsEarned] = useState(0);
 
   if (!user) {
     navigate({ to: '/login' });
@@ -136,17 +135,12 @@ export const ResolveQuestionPage: React.FC = () => {
 
     setAnswerText('');
     setIsAnswered(true);
-    setPointsEarned(prev => prev + 25); // Add +25 Spurti Points!
 
     setTimeout(() => {
       setIsAnswered(false);
       setSelectedIssueId(null);
     }, 4000);
   };
-
-  // Gamified Badge Level mapping
-  const badgeLevel = pointsEarned >= 100 ? 'Platinum' : pointsEarned >= 50 ? 'Gold' : pointsEarned >= 25 ? 'Silver' : 'Bronze';
-  const progressPercent = Math.min((pointsEarned / 100) * 100, 100);
 
   return (
     <div className="portal-page">
@@ -170,47 +164,20 @@ export const ResolveQuestionPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Gamified stats tracker */}
-        <div className="portal-stats-row" style={{ gridTemplateColumns: '1fr 2fr 1fr' }}>
+        {/* Available questions stats row */}
+        <div className="portal-stats-row" style={{ gridTemplateColumns: '1fr' }}>
           <div className="portal-stat-card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
             <div className="portal-stat-label">Available Questions</div>
             <div className="portal-stat-value" style={{ color: 'var(--accent)' }}>
               {queueQuestions.length} <span className="portal-stat-unit">In Queue</span>
             </div>
           </div>
-
-          <div className="portal-stat-card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-              <span className="portal-stat-label">Spurti Progress Tracker</span>
-              <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--accent)' }}>{pointsEarned} / 100 PTS</span>
-            </div>
-            <div style={{ width: '100%', height: '8px', background: 'var(--bg-glass)', borderRadius: '100px', overflow: 'hidden', marginBottom: '6px' }}>
-              <div 
-                style={{ 
-                  width: `${progressPercent}%`, 
-                  height: '100%', 
-                  background: 'linear-gradient(90deg, var(--accent) 0%, var(--accent-hover) 100%)',
-                  borderRadius: '100px',
-                  transition: 'width 0.4s ease'
-                }}
-              />
-            </div>
-            <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Answering open questions earns you +25 pts towards a Gold badge!</span>
-          </div>
-
-          <div className="portal-stat-card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--accent)' }}>
-              <Award size={20} />
-              <span style={{ fontSize: '18px', fontWeight: 800 }}>{badgeLevel}</span>
-            </div>
-            <div style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '4px' }}>Active Badge Tier</div>
-          </div>
         </div>
 
         {isAnswered && (
-          <div className="portal-success-banner" style={{ marginBottom: '24px', animation: 'pulse-badge 1s infinite' }}>
+          <div className="portal-success-banner" style={{ marginBottom: '24px' }}>
             <Sparkles size={18} />
-            <span><strong>Success!</strong> Answer submitted for Senior Review. You earned <strong>+25 Spurti Points!</strong></span>
+            <span><strong>Success!</strong> Answer submitted for Senior Review.</span>
           </div>
         )}
 
