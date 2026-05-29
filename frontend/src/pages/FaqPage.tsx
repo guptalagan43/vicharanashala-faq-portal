@@ -22,7 +22,7 @@ export const FaqPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'all' | 'most-asked' | 'latest' | 'bookmarked'>('all');
   const [bookmarkedIds, setBookmarkedIds] = useState<string[]>([]);
 
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, isAdmin } = useAuth();
 
   useEffect(() => {
     if (isAuthenticated && user?.email) {
@@ -317,6 +317,8 @@ export const FaqPage: React.FC = () => {
               sectionNumbersMap={sectionNumbersMap}
               bookmarkedIds={bookmarkedIds}
               onToggleBookmark={handleToggleBookmark}
+              isAdmin={isAdmin}
+              activeTab={activeTab}
             />
           </>
         )}

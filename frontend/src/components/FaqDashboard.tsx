@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import axios from 'axios';
 
 interface FaqItem {
   _id: string;
@@ -21,6 +22,8 @@ interface FaqDashboardProps {
   // Bookmarks extension
   bookmarkedIds?: string[];
   onToggleBookmark?: (faqId: string) => void;
+  isAdmin?: boolean;
+  activeTab?: string;
 }
 
 export const FaqDashboard: React.FC<FaqDashboardProps> = ({
@@ -34,6 +37,8 @@ export const FaqDashboard: React.FC<FaqDashboardProps> = ({
   sectionNumbersMap,
   bookmarkedIds = [],
   onToggleBookmark = () => {},
+  isAdmin = false,
+  activeTab = 'all',
 }) => {
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
 
@@ -59,6 +64,17 @@ export const FaqDashboard: React.FC<FaqDashboardProps> = ({
         newSet.delete(id);
       } else {
         newSet.add(id);
+
+        // Find and increment locally for instant Admin visual feedback
+        const faqItem = faqs.find(f => f._id === id);
+        if (faqItem) {
+          faqItem.view_count = (faqItem.view_count || 0) + 1;
+        }
+
+        // Increment view count in MongoDB
+        axios.patch(`http://localhost:3001/api/faqs/${id}/view`).catch(err => {
+          console.error('Failed to increment FAQ view count:', err);
+        });
       }
       return newSet;
     });
@@ -192,6 +208,17 @@ export const FaqDashboard: React.FC<FaqDashboardProps> = ({
                         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                       </svg>
                     </button>
+
+                    {/* View Tracker (Admin only on Trending tab) */}
+                    {isAdmin && activeTab === 'most-asked' && (
+                      <span
+                        className="faq-view-tracker"
+                        title="Total views (Admin only)"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        🔥 {faq.view_count || 0}
+                      </span>
+                    )}
 
                     <span className="chevron-icon">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

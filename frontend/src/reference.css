@@ -3303,4 +3303,26 @@ mark.highlight,
   transform: translateY(-1px);
 }
 
+/* FAQ View Tracker - Admin Only */
+.faq-view-tracker {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+  background: var(--accent-glow);
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(240, 192, 64, 0.15);
+  margin-right: 10px;
+  letter-spacing: 0.02em;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+[data-theme="light"] .faq-view-tracker {
+  background: rgba(202, 138, 4, 0.06);
+  border-color: rgba(202, 138, 4, 0.15);
+}
+
+
 
