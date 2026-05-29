@@ -3,6 +3,7 @@ import axios from 'axios';
 import '../reference.css';
 import '../mobile.css';
 import FaqDashboard from '../components/FaqDashboard';
+import { useAuth } from '../context/AuthContext';
 
 interface FaqItem {
   _id: string;
@@ -18,6 +19,48 @@ export const FaqPage: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<string>('All');
   const [tocOpen, setTocOpen] = useState(false);
   const [activeTocSection, setActiveToc] = useState('s-1');
+  const [activeTab, setActiveTab] = useState<'all' | 'most-asked' | 'latest' | 'bookmarked'>('all');
+  const [bookmarkedIds, setBookmarkedIds] = useState<string[]>([]);
+
+  const { user, isAuthenticated } = useAuth();
+
+  useEffect(() => {
+    if (isAuthenticated && user?.email) {
+      const saved = JSON.parse(localStorage.getItem(`bookmarks_${user.email}`) || '[]');
+      setBookmarkedIds(saved);
+    } else {
+      setBookmarkedIds([]);
+    }
+  }, [isAuthenticated, user]);
+
+  const handleToggleBookmark = (faqId: string) => {
+    if (!isAuthenticated) {
+      window.location.href = '/login';
+      return;
+    }
+    setBookmarkedIds((prev) => {
+      const next = prev.includes(faqId) ? prev.filter((id) => id !== faqId) : [...prev, faqId];
+      localStorage.setItem(`bookmarks_${user?.email}`, JSON.stringify(next));
+      return next;
+    });
+  };
+
+  const displayFaqs = useMemo(() => {
+    switch (activeTab) {
+      case 'most-asked':
+        // Sort by view_count descending
+        return [...faqs].sort((a, b) => (b.view_count || 0) - (a.view_count || 0));
+      case 'latest':
+        // Sort by _id descending (ObjectId creation order)
+        return [...faqs].sort((a, b) => b._id.localeCompare(a._id));
+      case 'bookmarked':
+        if (!isAuthenticated) return [];
+        return faqs.filter((f) => bookmarkedIds.includes(f._id));
+      case 'all':
+      default:
+        return faqs;
+    }
+  }, [faqs, activeTab, isAuthenticated, bookmarkedIds]);
 
   useEffect(() => {
     axios.get<FaqItem[]>('http://localhost:3001/api/faqs')
@@ -124,6 +167,43 @@ export const FaqPage: React.FC = () => {
     <>
       <section className="hero" id="hero">
         <div className="hero-inner">
+          {/* IIT Ropar pill badge */}
+          <div className="hero-pill-badge">
+            IIT Ropar · Applied AI · Open-Source
+          </div>
+
+          {/* Sub-page Navigation Tabs */}
+          <div className="faq-subpage-tabs">
+            <button
+              type="button"
+              className={`faq-tab-btn ${activeTab === 'all' ? 'active' : ''}`}
+              onClick={() => setActiveTab('all')}
+            >
+              All FAQs
+            </button>
+            <button
+              type="button"
+              className={`faq-tab-btn ${activeTab === 'most-asked' ? 'active' : ''}`}
+              onClick={() => setActiveTab('most-asked')}
+            >
+              Most Asked
+            </button>
+            <button
+              type="button"
+              className={`faq-tab-btn ${activeTab === 'latest' ? 'active' : ''}`}
+              onClick={() => setActiveTab('latest')}
+            >
+              Latest FAQs
+            </button>
+            <button
+              type="button"
+              className={`faq-tab-btn ${activeTab === 'bookmarked' ? 'active' : ''}`}
+              onClick={() => setActiveTab('bookmarked')}
+            >
+              Bookmarked
+            </button>
+          </div>
+
           <h1 className="hero-title" style={{ color: 'var(--accent)' }}>Frequently Asked<br />Questions</h1>
           <p className="hero-subtitle">
             Everything you need to know about the Vicharanashala Internship Programme (VINS).
@@ -146,55 +226,35 @@ export const FaqPage: React.FC = () => {
         </div>
       </section>
 
-      <div className="mobile-toc-wrapper">
-        <button
-          className={`mobile-toc-toggle${tocOpen ? ' open' : ''}`}
-          aria-expanded={tocOpen}
-          aria-controls="mobile-toc-panel"
-          onClick={() => setTocOpen(v => !v)}
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-               strokeLinecap="round" strokeLinejoin="round">
-            <line x1="3" y1="6"  x2="21" y2="6"  />
-            <line x1="3" y1="12" x2="21" y2="12" />
-            <line x1="3" y1="18" x2="15" y2="18" />
-          </svg>
-          Contents
-          <svg className="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-               strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-               style={{ marginLeft: 'auto' }}>
-            <polyline points="6 9 12 15 18 9" />
-          </svg>
-        </button>
+      {!(activeTab === 'bookmarked' && !isAuthenticated) && (
+        <div className="mobile-toc-wrapper">
+          <button
+            className={`mobile-toc-toggle${tocOpen ? ' open' : ''}`}
+            aria-expanded={tocOpen}
+            aria-controls="mobile-toc-panel"
+            onClick={() => setTocOpen(v => !v)}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+                 strokeLinecap="round" strokeLinejoin="round">
+              <line x1="3" y1="6"  x2="21" y2="6"  />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="15" y2="18" />
+            </svg>
+            Contents
+            <svg className="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                 style={{ marginLeft: 'auto' }}>
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </button>
 
-        <div id="mobile-toc-panel" className={`mobile-toc-panel${tocOpen ? ' open' : ''}`}>
-          <nav className="toc-nav">
-            {TOC_ITEMS.map(item => (
-              <a
-                key={item.section}
-                href={`#${item.section}`}
-                className={`toc-link${activeTocSection === item.section ? ' active' : ''}`}
-                onClick={(e) => { e.preventDefault(); handleTocClick(item.section); }}
-              >
-                <span className="toc-num">{item.num}</span>
-                {item.label}
-              </a>
-            ))}
-          </nav>
-        </div>
-      </div>
-
-      <div className="main-layout" id="main-layout">
-        <aside className="toc-sidebar" id="toc-sidebar">
-          <div className="toc-sticky">
-            <h2 className="toc-heading">Contents</h2>
-            <nav className="toc-nav" id="toc-nav">
+          <div id="mobile-toc-panel" className={`mobile-toc-panel${tocOpen ? ' open' : ''}`}>
+            <nav className="toc-nav">
               {TOC_ITEMS.map(item => (
                 <a
                   key={item.section}
                   href={`#${item.section}`}
                   className={`toc-link${activeTocSection === item.section ? ' active' : ''}`}
-                  data-section={item.section}
                   onClick={(e) => { e.preventDefault(); handleTocClick(item.section); }}
                 >
                   <span className="toc-num">{item.num}</span>
@@ -203,18 +263,63 @@ export const FaqPage: React.FC = () => {
               ))}
             </nav>
           </div>
-        </aside>
+        </div>
+      )}
 
-        <FaqDashboard
-          faqs={faqs}
-          searchQuery={searchQuery}
+      <div className="main-layout" id="main-layout">
+        {activeTab === 'bookmarked' && !isAuthenticated ? (
+          <div className="login-promo-card">
+            <div className="promo-logo">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+            </div>
+            <h2>View Your Bookmarks</h2>
+            <p>Login to save your most important questions, coursework details, and policy guides for quick, customized access.</p>
+            <button
+              type="button"
+              onClick={() => window.location.href = '/login'}
+              className="promo-btn"
+            >
+              Sign In to Continue
+            </button>
+          </div>
+        ) : (
+          <>
+            <aside className="toc-sidebar" id="toc-sidebar">
+              <div className="toc-sticky">
+                <h2 className="toc-heading">Contents</h2>
+                <nav className="toc-nav" id="toc-nav">
+                  {TOC_ITEMS.map(item => (
+                    <a
+                      key={item.section}
+                      href={`#${item.section}`}
+                      className={`toc-link${activeTocSection === item.section ? ' active' : ''}`}
+                      data-section={item.section}
+                      onClick={(e) => { e.preventDefault(); handleTocClick(item.section); }}
+                    >
+                      <span className="toc-num">{item.num}</span>
+                      {item.label}
+                    </a>
+                  ))}
+                </nav>
+              </div>
+            </aside>
 
-          activeCategory={activeCategory}
-          setActiveCategory={setActiveCategory}
-          distinctCategories={distinctCategories}
-          numbersMap={numbersMap}
-          sectionNumbersMap={sectionNumbersMap}
-        />
+            <FaqDashboard
+              faqs={displayFaqs}
+              searchQuery={searchQuery}
+              activeCategory={activeCategory}
+              setActiveCategory={setActiveCategory}
+              distinctCategories={distinctCategories}
+              numbersMap={numbersMap}
+              sectionNumbersMap={sectionNumbersMap}
+              bookmarkedIds={bookmarkedIds}
+              onToggleBookmark={handleToggleBookmark}
+            />
+          </>
+        )}
       </div>
     </>
   );

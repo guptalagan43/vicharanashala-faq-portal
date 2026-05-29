@@ -3125,3 +3125,182 @@ mark.highlight,
   -webkit-filter: blur(60px);
 }
 
+/* ───────────────────────────────────────────
+   15. FAQ SUB-PAGES & BOOKMARKS EXTENSION
+   ─────────────────────────────────────────── */
+
+/* Hero Pill Badge */
+.hero-pill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 24px;
+  padding: 6px 16px;
+  border: 1px solid rgba(240, 192, 64, 0.28);
+  border-radius: 100px;
+  background: rgba(240, 192, 64, 0.05);
+  box-shadow: 0 4px 16px rgba(240, 192, 64, 0.04);
+}
+
+[data-theme="light"] .hero-pill-badge {
+  background: rgba(202, 138, 4, 0.06);
+  border-color: rgba(202, 138, 4, 0.3);
+}
+
+/* Sub-page Navigation Tabs */
+.faq-subpage-tabs {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px;
+  background: rgba(14, 14, 22, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  margin-bottom: 32px;
+  box-shadow: var(--shadow-sm);
+}
+
+[data-theme="light"] .faq-subpage-tabs {
+  background: rgba(255, 255, 255, 0.5);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.faq-tab-btn {
+  padding: 8px 20px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all var(--transition-fast) ease;
+  background: transparent;
+  border: none;
+}
+
+.faq-tab-btn:hover {
+  color: var(--text-primary);
+}
+
+.faq-tab-btn.active {
+  background: var(--accent);
+  color: var(--text-inverse);
+  font-weight: 600;
+  box-shadow: 0 4px 16px var(--accent-glow-strong);
+}
+
+.faq-tab-btn.active:hover {
+  background: var(--accent-hover);
+}
+
+/* FAQ Bookmark Button */
+.faq-bookmark-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast) ease;
+  flex-shrink: 0;
+  margin-right: 4px;
+  opacity: 0.45;
+  border: none;
+}
+
+.faq-bookmark-btn svg {
+  width: 16px;
+  height: 16px;
+  transition: transform var(--transition-fast) ease;
+}
+
+.faq-bookmark-btn:hover {
+  background: var(--accent-glow);
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.faq-bookmark-btn.active {
+  opacity: 1;
+}
+
+/* Login Promotion Card */
+.login-promo-card {
+  grid-column: span 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 64px 32px;
+  background: var(--bg-card);
+  backdrop-filter: blur(24px) saturate(1.3);
+  -webkit-backdrop-filter: blur(24px) saturate(1.3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  max-width: 580px;
+  margin: 32px auto 0;
+  animation: fadeInUp 0.45s var(--transition-slow) both;
+}
+
+.promo-logo {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius);
+  background: var(--accent-glow);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.promo-logo svg {
+  width: 32px;
+  height: 32px;
+}
+
+.login-promo-card h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  border: none;
+}
+
+.login-promo-card p {
+  font-size: 14.5px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  max-width: 440px;
+  margin-bottom: 32px;
+}
+
+.promo-btn {
+  background: var(--accent);
+  color: var(--text-inverse);
+  padding: 12px 28px;
+  font-size: 14.5px;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 4px 16px var(--accent-glow-strong);
+  transition: all var(--transition-fast) ease;
+  border: none;
+  cursor: pointer;
+}
+
+.promo-btn:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+}
+
+

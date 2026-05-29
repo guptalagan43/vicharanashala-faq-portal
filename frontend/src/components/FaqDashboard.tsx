@@ -17,6 +17,10 @@ interface FaqDashboardProps {
   distinctCategories: string[];
   numbersMap: Record<string, string>;
   sectionNumbersMap: Record<string, string>;
+
+  // Bookmarks extension
+  bookmarkedIds?: string[];
+  onToggleBookmark?: (faqId: string) => void;
 }
 
 export const FaqDashboard: React.FC<FaqDashboardProps> = ({
@@ -28,6 +32,8 @@ export const FaqDashboard: React.FC<FaqDashboardProps> = ({
   distinctCategories,
   numbersMap,
   sectionNumbersMap,
+  bookmarkedIds = [],
+  onToggleBookmark = () => {},
 }) => {
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
 
@@ -171,6 +177,22 @@ export const FaqDashboard: React.FC<FaqDashboardProps> = ({
                   >
                     <span className="q-number">{numbersMap[faq._id]}</span>
                     <span className="q-text">{faq.question}</span>
+
+                    {/* Bookmark Toggle Button */}
+                    <button
+                      type="button"
+                      className={`faq-bookmark-btn ${bookmarkedIds.includes(faq._id) ? 'active' : ''}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onToggleBookmark(faq._id);
+                      }}
+                      title={bookmarkedIds.includes(faq._id) ? "Remove Bookmark" : "Bookmark FAQ"}
+                    >
+                      <svg viewBox="0 0 24 24" fill={bookmarkedIds.includes(faq._id) ? "var(--accent)" : "none"} stroke="var(--accent)" strokeWidth="2">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                      </svg>
+                    </button>
+
                     <span className="chevron-icon">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <polyline points="6 9 12 15 18 9" />
