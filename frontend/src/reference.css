@@ -3088,3 +3088,27 @@ mark.highlight,
     height: 40px;
   }
 }
+
+/* Cursor Glow - Ambient Interactive Yellow Morph */
+.cursor-glow {
+  position: fixed;
+  top: -200px;
+  left: -200px;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(240, 192, 64, 0.08) 0%, rgba(240, 192, 64, 0.02) 45%, transparent 70%);
+  filter: blur(50px);
+  -webkit-filter: blur(50px);
+  pointer-events: none;
+  z-index: 1; /* Below page text/cards but above static backdrop gradients */
+  transition: transform 0.18s cubic-bezier(0.23, 1, 0.32, 1);
+  will-change: transform;
+}
+
+[data-theme="light"] .cursor-glow {
+  background: radial-gradient(circle, rgba(202, 138, 4, 0.11) 0%, rgba(202, 138, 4, 0.03) 45%, transparent 70%);
+  filter: blur(60px);
+  -webkit-filter: blur(60px);
+}
+

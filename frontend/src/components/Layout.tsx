@@ -6,6 +6,7 @@ import { ArrowUp } from 'lucide-react';
 
 export const Layout: React.FC = () => {
   const [showBackToTop, setShowBackToTop] = useState(false);
+  const [mousePos, setMousePos] = useState({ x: -400, y: -400 });
 
   useEffect(() => {
     const handleScroll = () => {
@@ -15,14 +16,23 @@ export const Layout: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePos({ x: e.clientX, y: e.clientY });
+    };
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', position: 'relative' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', position: 'relative', overflowX: 'hidden' }}>
+      <div className="cursor-glow" style={{ transform: `translate3d(${mousePos.x}px, ${mousePos.y}px, 0)` }} />
       <Header />
-      <main style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+      <main style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 2 }}>
         <Outlet />
       </main>
       <Footer />
