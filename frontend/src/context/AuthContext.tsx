@@ -29,7 +29,7 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isAdmin: boolean;
-  login: (email: string, role: Role) => Promise<void>;
+  login: (email: string) => Promise<void>;
   signup: (name: string, email: string, role: Role, cvFileName?: string) => Promise<void>;
   updateProfile: (data: Partial<UserProfile>) => void;
   logout: () => void;
@@ -60,27 +60,25 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   }, [user]);
 
-  const login = async (email: string, role: Role) => {
+  const login = async (email: string) => {
     await new Promise((resolve) => setTimeout(resolve, 500));
     
-    // Hardcoded mock admin user
-    if (role === 'admin' && email === 'admin@vins.in') {
+    // Automatically determine role based on email ID
+    const role: Role = email === 'admin@vins.in' ? 'admin' : 'student';
+    
+    if (role === 'admin') {
       setUser({
         name: 'Super Admin',
         email,
-        role,
+        role: 'admin',
       });
       return;
-    }
-
-    if (role === 'admin' && email !== 'admin@vins.in') {
-      throw new Error('Invalid admin credentials');
     }
 
     setUser({
       name: email.split('@')[0],
       email,
-      role,
+      role: 'student',
     });
   };
 

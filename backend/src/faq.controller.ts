@@ -1,4 +1,4 @@
-import { Controller, Get, Patch, Param, Post, Body } from '@nestjs/common';
+import { Controller, Get, Patch, Param, Post, Put, Delete, Body } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { FAQ, FAQDocument } from './faqs/schemas/faq.schema';
@@ -20,6 +20,19 @@ export class FaqController {
       ...createFaqDto,
       view_count: 0
     });
+  }
+
+  @Put(':id')
+  async updateFaq(
+    @Param('id') id: string,
+    @Body() updateDto: Partial<FAQ>,
+  ): Promise<FAQ | null> {
+    return this.faqModel.findByIdAndUpdate(id, updateDto, { new: true }).exec();
+  }
+
+  @Delete(':id')
+  async deleteFaq(@Param('id') id: string): Promise<FAQ | null> {
+    return this.faqModel.findByIdAndDelete(id).exec();
   }
 
   @Patch(':id/view')

@@ -171,10 +171,6 @@ export const FaqPage: React.FC = () => {
     }, 100);
   };
 
-  const handleFaqAdded = (newFaq: FaqItem) => {
-    setFaqs((prev) => [newFaq, ...prev]);
-  };
-
   return (
     <>
       <section className="hero" id="hero">
@@ -203,13 +199,15 @@ export const FaqPage: React.FC = () => {
             >
               Latest FAQs
             </button>
-            <button
-              type="button"
-              className={`faq-tab-btn ${activeTab === 'bookmarked' ? 'active' : ''}`}
-              onClick={() => setActiveTab('bookmarked')}
-            >
-              Bookmarked
-            </button>
+            {!isAdmin && (
+              <button
+                type="button"
+                className={`faq-tab-btn ${activeTab === 'bookmarked' ? 'active' : ''}`}
+                onClick={() => setActiveTab('bookmarked')}
+              >
+                Bookmarked
+              </button>
+            )}
           </div>
 
           <h1 className="hero-title" style={{ color: 'var(--accent)' }}>Frequently Asked Questions</h1>
@@ -340,7 +338,6 @@ export const FaqPage: React.FC = () => {
               onToggleBookmark={handleToggleBookmark}
               isAdmin={isAdmin}
               activeTab={activeTab}
-              onFaqAdded={handleFaqAdded}
               isLoading={isLoading}
             />
           </>

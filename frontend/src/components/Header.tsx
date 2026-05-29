@@ -105,12 +105,16 @@ export const Header: React.FC = () => {
                     <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{user?.email}</div>
                     {isAdmin && <span style={{ display: 'inline-block', marginTop: '4px', fontSize: '10px', padding: '2px 6px', background: 'var(--accent-glow)', color: 'var(--accent)', borderRadius: '10px' }}>Admin</span>}
                   </div>
-                  {!isAdmin && (
+                  {!isAdmin ? (
                     <>
                       <Link to="/profile" className="dropdown-item">Profile</Link>
                       <Link to="/raise-issue" className="dropdown-item">Raise a new issue</Link>
                       <Link to="/track-issues" className="dropdown-item">Track my issues</Link>
                       <Link to="/resolve-question" className="dropdown-item">Resolve a question</Link>
+                    </>
+                  ) : (
+                    <>
+                      <Link to="/admin" className="dropdown-item" style={{ color: 'var(--accent)', fontWeight: 600 }}>Admin Dashboard</Link>
                     </>
                   )}
                   <div style={{ height: '1px', background: 'var(--border)', margin: '4px 0' }}></div>

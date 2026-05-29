@@ -7,10 +7,11 @@ import { LoginPage } from './pages/LoginPage';
 import { SignupPage } from './pages/SignupPage';
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
 import { ProfilePage } from './pages/ProfilePage';
-import { PlaceholderPage } from './pages/PlaceholderPage';
 import { RaiseIssuePage } from './pages/RaiseIssuePage';
 import { TrackIssuesPage } from './pages/TrackIssuesPage';
 import { ResolveQuestionPage } from './pages/ResolveQuestionPage';
+import { AdminDashboard } from './pages/AdminDashboard';
+import { AnnouncementsPage } from './pages/AnnouncementsPage';
 
 const rootRoute = createRootRoute({
   component: Layout,
@@ -79,7 +80,13 @@ const resolveQuestionRoute = createRoute({
 const announcementsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/announcements',
-  component: () => <PlaceholderPage title="Announcements" />,
+  component: AnnouncementsPage,
+});
+
+const adminRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/admin',
+  component: AdminDashboard,
 });
 
 const routeTree = rootRoute.addChildren([
@@ -94,6 +101,7 @@ const routeTree = rootRoute.addChildren([
   trackIssuesRoute,
   resolveQuestionRoute,
   announcementsRoute,
+  adminRoute,
 ]);
 
 export const router = createRouter({ routeTree });

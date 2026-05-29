@@ -24,7 +24,6 @@ interface FaqDashboardProps {
   onToggleBookmark?: (faqId: string) => void;
   isAdmin?: boolean;
   activeTab?: string;
-  onFaqAdded?: (newFaq: FaqItem) => void;
   isLoading?: boolean;
 }
 
@@ -41,38 +40,9 @@ export const FaqDashboard: React.FC<FaqDashboardProps> = ({
   onToggleBookmark = () => {},
   isAdmin = false,
   activeTab = 'all',
-  onFaqAdded,
   isLoading = false,
 }) => {
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
-  const [showAddForm, setShowAddForm] = useState(false);
-  const [newQuestion, setNewQuestion] = useState('');
-  const [newAnswer, setNewAnswer] = useState('');
-  const [newCategory, setNewCategory] = useState('');
-
-  const handleAddFaq = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newQuestion.trim() || !newAnswer.trim() || !newCategory.trim()) return;
-
-    try {
-      const response = await axios.post<FaqItem>('http://localhost:3001/api/faqs', {
-        question: newQuestion.trim(),
-        answer: newAnswer.trim(),
-        category: newCategory.trim(),
-      });
-      
-      if (onFaqAdded) {
-        onFaqAdded(response.data);
-      }
-      
-      setNewQuestion('');
-      setNewAnswer('');
-      setNewCategory('');
-      setShowAddForm(false);
-    } catch (err) {
-      console.error('Failed to create FAQ:', err);
-    }
-  };
 
   const categoriesList = useMemo(() => {
     return ['All', ...distinctCategories];
@@ -154,19 +124,21 @@ export const FaqDashboard: React.FC<FaqDashboardProps> = ({
           <span className="q-text">{faq.question}</span>
 
           {/* Bookmark Toggle Button */}
-          <button
-            type="button"
-            className={`faq-bookmark-btn ${bookmarkedIds.includes(faq._id) ? 'active' : ''}`}
-            onClick={(e) => {
-              e.stopPropagation();
-              onToggleBookmark(faq._id);
-            }}
-            title={bookmarkedIds.includes(faq._id) ? "Remove Bookmark" : "Bookmark FAQ"}
-          >
-            <svg viewBox="0 0 24 24" fill={bookmarkedIds.includes(faq._id) ? "var(--accent)" : "none"} stroke="var(--accent)" strokeWidth="2">
-              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-            </svg>
-          </button>
+          {!isAdmin && (
+            <button
+              type="button"
+              className={`faq-bookmark-btn ${bookmarkedIds.includes(faq._id) ? 'active' : ''}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleBookmark(faq._id);
+              }}
+              title={bookmarkedIds.includes(faq._id) ? "Remove Bookmark" : "Bookmark FAQ"}
+            >
+              <svg viewBox="0 0 24 24" fill={bookmarkedIds.includes(faq._id) ? "var(--accent)" : "none"} stroke="var(--accent)" strokeWidth="2">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 2 9.27 8.91 8.26 12 2" />
+              </svg>
+            </button>
+          )}
 
           {/* View Tracker (Admin only on Trending tab) */}
           {isAdmin && activeTab === 'most-asked' && (
@@ -254,87 +226,6 @@ export const FaqDashboard: React.FC<FaqDashboardProps> = ({
               {category === 'All' ? 'All Questions' : category}
             </button>
           ))}
-        </div>
-      )}
-
-      {/* Admin Add FAQ Section */}
-      {isAdmin && (
-        <div className="admin-add-faq-section" style={{ marginBottom: '24px' }}>
-          {!showAddForm ? (
-            <button
-              type="button"
-              className="control-btn"
-              onClick={() => setShowAddForm(true)}
-              style={{ background: 'var(--accent)', color: 'var(--text-inverse)', fontWeight: 600, padding: '10px 20px', borderRadius: 'var(--radius-sm)', border: 'none', cursor: 'pointer' }}
-            >
-              + Add New FAQ
-            </button>
-          ) : (
-            <form onSubmit={handleAddFaq} style={{ background: 'var(--bg-glass)', border: '1px solid var(--border-active)', borderRadius: 'var(--radius)', padding: '24px', animation: 'fadeInUp 0.3s ease' }}>
-              <h3 style={{ fontSize: '16px', fontWeight: 700, color: 'var(--accent)', marginBottom: '16px' }}>Add New FAQ</h3>
-              
-              <div style={{ marginBottom: '14px' }}>
-                <label style={{ display: 'block', fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '6px', fontWeight: 500 }}>Question</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g., What is the NOC upload deadline?"
-                  value={newQuestion}
-                  onChange={(e) => setNewQuestion(e.target.value)}
-                  style={{ width: '100%', padding: '12px 14px', background: 'var(--bg-input)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', color: 'var(--text-primary)', outline: 'none' }}
-                />
-              </div>
-
-              <div style={{ marginBottom: '14px' }}>
-                <label style={{ display: 'block', fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '6px', fontWeight: 500 }}>Answer (HTML supported)</label>
-                <textarea
-                  required
-                  rows={4}
-                  placeholder="Provide the resolved answer text here..."
-                  value={newAnswer}
-                  onChange={(e) => setNewAnswer(e.target.value)}
-                  style={{ width: '100%', padding: '12px 14px', background: 'var(--bg-input)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', color: 'var(--text-primary)', outline: 'none', resize: 'vertical' }}
-                />
-              </div>
-
-              <div style={{ marginBottom: '20px' }}>
-                <label style={{ display: 'block', fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '6px', fontWeight: 500 }}>Category</label>
-                <select
-                  required
-                  value={newCategory}
-                  onChange={(e) => setNewCategory(e.target.value)}
-                  style={{ width: '100%', padding: '12px 14px', background: 'var(--bg-input)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', color: 'var(--text-primary)', outline: 'none' }}
-                >
-                  <option value="">Select a Category</option>
-                  {distinctCategories.map(cat => (
-                    <option key={cat} value={cat}>{cat}</option>
-                  ))}
-                  <option value="General">General</option>
-                  <option value="Technical">Technical</option>
-                  <option value="Stipend">Stipend</option>
-                  <option value="Policy">Policy</option>
-                </select>
-              </div>
-
-              <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
-                <button
-                  type="button"
-                  onClick={() => setShowAddForm(false)}
-                  className="control-btn"
-                  style={{ background: 'transparent', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="control-btn"
-                  style={{ background: 'var(--accent)', color: 'var(--text-inverse)', fontWeight: 600 }}
-                >
-                  Publish FAQ
-                </button>
-              </div>
-            </form>
-          )}
         </div>
       )}
 
