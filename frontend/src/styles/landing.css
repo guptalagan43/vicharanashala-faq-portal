@@ -492,12 +492,12 @@
 }
 
 .faq-action-card--resolve {
-  background: transparent;
-  border: 2px solid var(--border-hover);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
 }
 
 .faq-action-card--resolve:hover {
-  border-color: rgba(41, 151, 255, 0.3);
+  border-color: var(--border-active);
   box-shadow: var(--shadow-lg);
 }
 
@@ -517,8 +517,8 @@
 }
 
 .faq-action-card--resolve .faq-action-icon {
-  background: rgba(41, 151, 255, 0.12);
-  color: #2997ff;
+  background: var(--accent-glow);
+  color: var(--accent);
 }
 
 .faq-action-card h3 {
@@ -545,7 +545,7 @@
 }
 
 .faq-action-card--resolve .faq-action-label {
-  color: #2997ff;
+  color: var(--accent);
 }
 
 /* ── Logistics ── */

@@ -14,7 +14,7 @@ export const Header: React.FC = () => {
   return (
     <header className="site-header" id="site-header">
       <div className="header-inner">
-        <Link to="/" className="logo">
+        <Link to="/" className="logo" onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
           <span className="logo-mark">V</span>
           <span className="logo-text">Vicharanashala</span>
         </Link>
@@ -23,6 +23,7 @@ export const Header: React.FC = () => {
           <Link to="/faq" className={currentPath === '/faq' ? 'active' : ''}>FAQ</Link>
           <Link to="/chat" className={currentPath === '/chat' ? 'active' : ''}>Yaksha Chat</Link>
           <Link to="/announcements" className={currentPath === '/announcements' ? 'active' : ''}>Announcements</Link>
+          <a href="https://samagama.in/" target="_blank" rel="noopener noreferrer">Samagama</a>
           
           <div className="nav-divider" style={{ width: '1px', height: '24px', background: 'var(--border)', margin: '0 8px' }}></div>
 
@@ -89,15 +90,19 @@ export const Header: React.FC = () => {
                     flexDirection: 'column',
                     gap: '4px',
                   }}>
-                    <div style={{ padding: '8px 12px', borderBottom: '1px solid var(--border)', marginBottom: '4px' }}>
+                  <div style={{ padding: '8px 12px', borderBottom: '1px solid var(--border)', marginBottom: '4px' }}>
                     <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)' }}>{user?.name}</div>
                     <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{user?.email}</div>
                     {isAdmin && <span style={{ display: 'inline-block', marginTop: '4px', fontSize: '10px', padding: '2px 6px', background: 'var(--accent-glow)', color: 'var(--accent)', borderRadius: '10px' }}>Admin</span>}
                   </div>
-                  <Link to="/profile" className="dropdown-item">Profile</Link>
-                  <a href="#" className="dropdown-item" onClick={(e) => e.preventDefault()}>Raise a new issue</a>
-                  <a href="#" className="dropdown-item" onClick={(e) => e.preventDefault()}>Track my issues</a>
-                  <a href="#" className="dropdown-item" onClick={(e) => e.preventDefault()}>Resolve a question</a>
+                  {!isAdmin && (
+                    <>
+                      <Link to="/profile" className="dropdown-item">Profile</Link>
+                      <Link to="/raise-issue" className="dropdown-item">Raise a new issue</Link>
+                      <Link to="/track-issues" className="dropdown-item">Track my issues</Link>
+                      <Link to="/resolve-question" className="dropdown-item">Resolve a question</Link>
+                    </>
+                  )}
                   <div style={{ height: '1px', background: 'var(--border)', margin: '4px 0' }}></div>
                   <button 
                     onClick={logout}

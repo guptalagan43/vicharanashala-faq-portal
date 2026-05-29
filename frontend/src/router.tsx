@@ -8,6 +8,9 @@ import { SignupPage } from './pages/SignupPage';
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { PlaceholderPage } from './pages/PlaceholderPage';
+import { RaiseIssuePage } from './pages/RaiseIssuePage';
+import { TrackIssuesPage } from './pages/TrackIssuesPage';
+import { ResolveQuestionPage } from './pages/ResolveQuestionPage';
 
 const rootRoute = createRootRoute({
   component: Layout,
@@ -55,6 +58,24 @@ const profileRoute = createRoute({
   component: ProfilePage,
 });
 
+const raiseIssueRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/raise-issue',
+  component: RaiseIssuePage,
+});
+
+const trackIssuesRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/track-issues',
+  component: TrackIssuesPage,
+});
+
+const resolveQuestionRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/resolve-question',
+  component: ResolveQuestionPage,
+});
+
 const announcementsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/announcements',
@@ -69,6 +90,9 @@ const routeTree = rootRoute.addChildren([
   signupRoute,
   forgotPasswordRoute,
   profileRoute,
+  raiseIssueRoute,
+  trackIssuesRoute,
+  resolveQuestionRoute,
   announcementsRoute,
 ]);
 

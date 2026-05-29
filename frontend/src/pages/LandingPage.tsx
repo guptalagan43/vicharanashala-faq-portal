@@ -23,39 +23,195 @@ export const LandingPage: React.FC = () => {
   const glowRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Reveal animations
-    const reveals = document.querySelectorAll('.reveal-up');
-    reveals.forEach((el) => {
-      gsap.to(el, {
-        opacity: 1,
-        y: 0,
-        duration: 0.9,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: el,
-          start: 'top 85%',
-          once: true,
-        },
+    const ctx = gsap.context(() => {
+      // ── Reveal-up animations with stagger per section ──
+      const sections = document.querySelectorAll('.lp-section');
+      sections.forEach((section) => {
+        const reveals = section.querySelectorAll('.reveal-up');
+        if (reveals.length === 0) return;
+        gsap.fromTo(reveals,
+          { opacity: 0, y: 40 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            ease: 'power3.out',
+            stagger: 0.12,
+            scrollTrigger: {
+              trigger: section,
+              start: 'top 80%',
+              once: true,
+            },
+          }
+        );
       });
-    });
 
-    // Parallax glow orbs shift with scroll
-    if (glowRef.current) {
-      gsap.to(glowRef.current, {
-        yPercent: -30,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: 'top top',
-          end: 'bottom bottom',
-          scrub: 1,
-        },
+      // ── Parallax glow orbs ──
+      if (glowRef.current) {
+        gsap.to(glowRef.current, {
+          yPercent: -40,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: 'top top',
+            end: 'bottom bottom',
+            scrub: 1,
+          },
+        });
+      }
+
+      // ── Stat cards: scale up from 0.85 ──
+      const stats = document.querySelectorAll('.expect-stat');
+      if (stats.length) {
+        gsap.fromTo(stats,
+          { scale: 0.85, opacity: 0 },
+          {
+            scale: 1, opacity: 1,
+            duration: 0.6,
+            ease: 'back.out(1.4)',
+            stagger: 0.1,
+            scrollTrigger: {
+              trigger: '.expect-stats',
+              start: 'top 85%',
+              once: true,
+            },
+          }
+        );
+      }
+
+      // ── Badge dots: pop in ──
+      const badges = document.querySelectorAll('.badge-dot');
+      if (badges.length) {
+        gsap.fromTo(badges,
+          { scale: 0, opacity: 0 },
+          {
+            scale: 1, opacity: 1,
+            duration: 0.5,
+            ease: 'back.out(2)',
+            stagger: 0.15,
+            scrollTrigger: {
+              trigger: '.badge-roadmap',
+              start: 'top 80%',
+              once: true,
+            },
+          }
+        );
+      }
+
+      // ── Tech tags: slide in from left ──
+      const tags = document.querySelectorAll('.tech-tag');
+      if (tags.length) {
+        gsap.fromTo(tags,
+          { x: -20, opacity: 0 },
+          {
+            x: 0, opacity: 1,
+            duration: 0.4,
+            ease: 'power2.out',
+            stagger: 0.05,
+            scrollTrigger: {
+              trigger: '.tech-tags',
+              start: 'top 85%',
+              once: true,
+            },
+          }
+        );
+      }
+
+      // ── FAQ action cards: slight zoom ──
+      const actionCards = document.querySelectorAll('.faq-action-card');
+      if (actionCards.length) {
+        gsap.fromTo(actionCards,
+          { scale: 0.92, opacity: 0, y: 30 },
+          {
+            scale: 1, opacity: 1, y: 0,
+            duration: 0.7,
+            ease: 'power3.out',
+            stagger: 0.15,
+            scrollTrigger: {
+              trigger: '.faq-action-grid',
+              start: 'top 85%',
+              once: true,
+            },
+          }
+        );
+      }
+
+      // ── Logistics items: slide in ──
+      const logItems = document.querySelectorAll('.logistics-item');
+      if (logItems.length) {
+        gsap.fromTo(logItems,
+          { x: -30, opacity: 0 },
+          {
+            x: 0, opacity: 1,
+            duration: 0.6,
+            ease: 'power2.out',
+            stagger: 0.1,
+            scrollTrigger: {
+              trigger: '.logistics-list',
+              start: 'top 85%',
+              once: true,
+            },
+          }
+        );
+      }
+
+      // ── Step numbers: counter pop ──
+      const stepNums = document.querySelectorAll('.step-number');
+      if (stepNums.length) {
+        gsap.fromTo(stepNums,
+          { scale: 0, rotation: -90 },
+          {
+            scale: 1, rotation: 0,
+            duration: 0.5,
+            ease: 'back.out(2)',
+            stagger: 0.1,
+            scrollTrigger: {
+              trigger: '.steps-list',
+              start: 'top 85%',
+              once: true,
+            },
+          }
+        );
+      }
+
+      // ── Dividers: width animation ──
+      const dividers = document.querySelectorAll('.lp-divider');
+      dividers.forEach((div) => {
+        gsap.fromTo(div,
+          { width: '0px' },
+          {
+            width: '60px',
+            duration: 0.8,
+            ease: 'power2.inOut',
+            scrollTrigger: {
+              trigger: div,
+              start: 'top 90%',
+              once: true,
+            },
+          }
+        );
       });
-    }
 
-    return () => {
-      ScrollTrigger.getAll().forEach((t) => t.kill());
-    };
+      // ── Cost badge: scale bounce ──
+      const costBadge = document.querySelector('.cost-badge');
+      if (costBadge) {
+        gsap.fromTo(costBadge,
+          { scale: 0.5, opacity: 0 },
+          {
+            scale: 1, opacity: 1,
+            duration: 0.7,
+            ease: 'elastic.out(1, 0.5)',
+            scrollTrigger: {
+              trigger: '.cost-highlight',
+              start: 'top 80%',
+              once: true,
+            },
+          }
+        );
+      }
+    }, containerRef);
+
+    return () => ctx.revert();
   }, []);
 
   return (
@@ -308,7 +464,7 @@ export const LandingPage: React.FC = () => {
         </p>
 
         <div className="faq-action-grid reveal-up">
-          <Link to="/faq" className="faq-action-card faq-action-card--raise">
+          <Link to="/raise-issue" className="faq-action-card faq-action-card--raise">
             <div className="faq-action-icon">
               <AlertCircle size={22} />
             </div>
@@ -322,7 +478,7 @@ export const LandingPage: React.FC = () => {
             </span>
           </Link>
 
-          <Link to="/faq" className="faq-action-card faq-action-card--resolve">
+          <Link to="/resolve-question" className="faq-action-card faq-action-card--resolve">
             <div className="faq-action-icon">
               <CheckCircle2 size={22} />
             </div>

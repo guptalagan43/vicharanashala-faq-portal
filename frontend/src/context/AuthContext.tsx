@@ -40,7 +40,16 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(() => {
     const storedUser = localStorage.getItem('auth_user');
-    return storedUser ? JSON.parse(storedUser) : null;
+    if (storedUser) {
+      const u = JSON.parse(storedUser) as User;
+      const first = (u.firstName || '').trim();
+      const last = (u.lastName || '').trim();
+      if (first || last) {
+        u.name = [first, last].filter(Boolean).join(' ');
+      }
+      return u;
+    }
+    return null;
   });
 
   useEffect(() => {
@@ -86,7 +95,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const updateProfile = (data: Partial<UserProfile>) => {
-    setUser((prev) => prev ? { ...prev, ...data } : null);
+    setUser((prev) => {
+      if (!prev) return null;
+      const updated = { ...prev, ...data };
+      // If firstName/lastName were provided, update display name
+      const first = (data.firstName ?? prev.firstName ?? '').trim();
+      const last = (data.lastName ?? prev.lastName ?? '').trim();
+      if (first || last) {
+        updated.name = [first, last].filter(Boolean).join(' ');
+      }
+      return updated;
+    });
   };
 
   const logout = () => {
