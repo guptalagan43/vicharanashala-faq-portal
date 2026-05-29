@@ -74,35 +74,35 @@
    -------------------------------------------------------------------------- */
 
 [data-theme="light"] {
-  --bg-primary: #f5f5f7;
+  --bg-primary: #f2f2f7;
   --bg-secondary: #ffffff;
-  --bg-card: rgba(255, 255, 255, 0.55);
-  --bg-card-hover: rgba(255, 255, 255, 0.7);
-  --bg-glass: rgba(255, 255, 255, 0.45);
-  --bg-input: rgba(255, 255, 255, 0.8);
+  --bg-card: rgba(255, 255, 255, 0.38);
+  --bg-card-hover: rgba(255, 255, 255, 0.55);
+  --bg-glass: rgba(255, 255, 255, 0.32);
+  --bg-input: rgba(255, 255, 255, 0.48);
 
-  --text-primary: #1d1d1f;
-  --text-secondary: #6e6e73;
-  --text-muted: #86868b;
-  --text-inverse: #f5f5f7;
+  --text-primary: #1c1c1e;
+  --text-secondary: #5e5e62;
+  --text-muted: #8e8e93;
+  --text-inverse: #f2f2f7;
 
   /* Keep yellow accent — just slightly deeper for white backgrounds */
-  --accent: #d4a017;
-  --accent-hover: #f0c040;
-  --accent-muted: #b8860b;
-  --accent-glow: rgba(212, 160, 23, 0.12);
-  --accent-glow-strong: rgba(212, 160, 23, 0.22);
+  --accent: #ca8a04;
+  --accent-hover: #eab308;
+  --accent-muted: #a16207;
+  --accent-glow: rgba(202, 138, 4, 0.08);
+  --accent-glow-strong: rgba(202, 138, 4, 0.16);
 
-  --border: rgba(0, 0, 0, 0.08);
-  --border-hover: rgba(0, 0, 0, 0.14);
-  --border-active: rgba(212, 160, 23, 0.35);
-  --border-subtle: rgba(0, 0, 0, 0.04);
+  --border: rgba(255, 255, 255, 0.55);
+  --border-hover: rgba(255, 255, 255, 0.75);
+  --border-active: rgba(202, 138, 4, 0.4);
+  --border-subtle: rgba(255, 255, 255, 0.3);
 
-  --shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
-  --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.1);
-  --shadow-accent: 0 4px 24px rgba(212, 160, 23, 0.1);
-  --shadow-card-hover: 0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05), 0 1px 2px rgba(0, 0, 0, 0.02);
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.03);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.01);
+  --shadow-accent: 0 8px 32px rgba(202, 138, 4, 0.1);
+  --shadow-card-hover: 0 12px 40px rgba(31, 38, 135, 0.08), 0 2px 8px rgba(0, 0, 0, 0.02);
 }
 
 
