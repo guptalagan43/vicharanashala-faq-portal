@@ -20,7 +20,7 @@ export const FaqPage: React.FC = () => {
   const [activeTocSection, setActiveToc] = useState('s-1');
 
   useEffect(() => {
-    axios.get<FaqItem[]>('http://localhost:3000/api/faqs')
+    axios.get<FaqItem[]>('http://localhost:3001/api/faqs')
       .then((response) => {
         setFaqs(response.data);
       })

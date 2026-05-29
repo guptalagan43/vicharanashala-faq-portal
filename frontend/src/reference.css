@@ -62,11 +62,47 @@
 
   /* Layout */
   --header-height: 64px;
-  --sidebar-width: 550px;
+  --sidebar-width: 600px;
   --yaksha-width: 340px;
   --content-max: 820px;
   --page-padding: 24px;
   --grid-unit: 8px;
+}
+
+/* --------------------------------------------------------------------------
+   1b. LIGHT MODE OVERRIDES
+   -------------------------------------------------------------------------- */
+
+[data-theme="light"] {
+  --bg-primary: #f5f5f7;
+  --bg-secondary: #ffffff;
+  --bg-card: rgba(255, 255, 255, 0.55);
+  --bg-card-hover: rgba(255, 255, 255, 0.7);
+  --bg-glass: rgba(255, 255, 255, 0.45);
+  --bg-input: rgba(255, 255, 255, 0.8);
+
+  --text-primary: #1d1d1f;
+  --text-secondary: #6e6e73;
+  --text-muted: #86868b;
+  --text-inverse: #f5f5f7;
+
+  /* Keep yellow accent — just slightly deeper for white backgrounds */
+  --accent: #d4a017;
+  --accent-hover: #f0c040;
+  --accent-muted: #b8860b;
+  --accent-glow: rgba(212, 160, 23, 0.12);
+  --accent-glow-strong: rgba(212, 160, 23, 0.22);
+
+  --border: rgba(0, 0, 0, 0.08);
+  --border-hover: rgba(0, 0, 0, 0.14);
+  --border-active: rgba(212, 160, 23, 0.35);
+  --border-subtle: rgba(0, 0, 0, 0.04);
+
+  --shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.1);
+  --shadow-accent: 0 4px 24px rgba(212, 160, 23, 0.1);
+  --shadow-card-hover: 0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 
@@ -256,9 +292,53 @@ ul, ol {
   transition: background var(--transition), box-shadow var(--transition);
 }
 
+[data-theme="light"] .site-header {
+  background: rgba(255, 255, 255, 0.72);
+}
+
 .site-header.scrolled {
   background: rgba(10, 10, 15, 0.88);
   box-shadow: 0 1px 24px rgba(0, 0, 0, 0.25);
+}
+
+[data-theme="light"] .site-header.scrolled {
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 1px 24px rgba(0, 0, 0, 0.06);
+}
+
+/* Dropdown items */
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  font-family: var(--font);
+  transition: background 0.15s ease;
+}
+
+.dropdown-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="light"] .dropdown-item:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.dropdown-item--danger {
+  color: #ff6b6b;
+}
+
+.dropdown-item--danger:hover {
+  background: rgba(255, 107, 107, 0.1);
 }
 
 .header-inner {

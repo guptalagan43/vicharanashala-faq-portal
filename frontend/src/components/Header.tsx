@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Link, useRouterState } from '@tanstack/react-router';
 import { useAuth } from '../context/AuthContext';
-import { LogOut, User as UserIcon, ChevronDown } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
+import { LogOut, User as UserIcon, ChevronDown, Sun, Moon } from 'lucide-react';
 
 export const Header: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { user, isAuthenticated, isAdmin, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const router = useRouterState();
   const currentPath = router.location.pathname;
 
@@ -23,6 +25,36 @@ export const Header: React.FC = () => {
           <Link to="/announcements" className={currentPath === '/announcements' ? 'active' : ''}>Announcements</Link>
           
           <div className="nav-divider" style={{ width: '1px', height: '24px', background: 'var(--border)', margin: '0 8px' }}></div>
+
+          {/* Theme Toggle */}
+          <button
+            onClick={toggleTheme}
+            className="theme-toggle"
+            title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '34px',
+              height: '34px',
+              borderRadius: '50%',
+              background: 'var(--bg-card)',
+              border: '1px solid var(--border)',
+              cursor: 'pointer',
+              color: 'var(--text-secondary)',
+              transition: 'all 0.25s ease',
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.background = 'var(--bg-card-hover)';
+              e.currentTarget.style.color = 'var(--accent)';
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.background = 'var(--bg-card)';
+              e.currentTarget.style.color = 'var(--text-secondary)';
+            }}
+          >
+            {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+          </button>
           
           {isAuthenticated ? (
             <div 
@@ -48,9 +80,9 @@ export const Header: React.FC = () => {
                 <div style={{ position: 'absolute', top: '100%', right: 0, paddingTop: '12px', zIndex: 100 }}>
                   <div style={{
                     width: '200px',
-                    background: 'var(--bg-card)',
+                    background: 'var(--bg-secondary)',
                     border: '1px solid var(--border)',
-                    borderRadius: 'var(--radius-md)',
+                    borderRadius: 'var(--radius)',
                     boxShadow: 'var(--shadow-lg)',
                     padding: '8px',
                     display: 'flex',
@@ -60,18 +92,16 @@ export const Header: React.FC = () => {
                     <div style={{ padding: '8px 12px', borderBottom: '1px solid var(--border)', marginBottom: '4px' }}>
                     <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)' }}>{user?.name}</div>
                     <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{user?.email}</div>
-                    {isAdmin && <span style={{ display: 'inline-block', marginTop: '4px', fontSize: '10px', padding: '2px 6px', background: 'rgba(240,192,64,0.1)', color: 'var(--accent)', borderRadius: '10px' }}>Admin</span>}
+                    {isAdmin && <span style={{ display: 'inline-block', marginTop: '4px', fontSize: '10px', padding: '2px 6px', background: 'var(--accent-glow)', color: 'var(--accent)', borderRadius: '10px' }}>Admin</span>}
                   </div>
-                  <Link to="/profile" style={{ padding: '8px 12px', fontSize: '13px', color: 'var(--text-secondary)', borderRadius: 'var(--radius-sm)', textDecoration: 'none' }} onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'} onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}>Profile</Link>
-                  <a href="#" style={{ padding: '8px 12px', fontSize: '13px', color: 'var(--text-secondary)', borderRadius: 'var(--radius-sm)', textDecoration: 'none' }} onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'} onMouseOut={(e) => e.currentTarget.style.background = 'transparent'} onClick={(e) => e.preventDefault()}>Raise a new issue</a>
-                  <a href="#" style={{ padding: '8px 12px', fontSize: '13px', color: 'var(--text-secondary)', borderRadius: 'var(--radius-sm)', textDecoration: 'none' }} onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'} onMouseOut={(e) => e.currentTarget.style.background = 'transparent'} onClick={(e) => e.preventDefault()}>Track my issues</a>
-                  <a href="#" style={{ padding: '8px 12px', fontSize: '13px', color: 'var(--text-secondary)', borderRadius: 'var(--radius-sm)', textDecoration: 'none' }} onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'} onMouseOut={(e) => e.currentTarget.style.background = 'transparent'} onClick={(e) => e.preventDefault()}>Resolve a question</a>
+                  <Link to="/profile" className="dropdown-item">Profile</Link>
+                  <a href="#" className="dropdown-item" onClick={(e) => e.preventDefault()}>Raise a new issue</a>
+                  <a href="#" className="dropdown-item" onClick={(e) => e.preventDefault()}>Track my issues</a>
+                  <a href="#" className="dropdown-item" onClick={(e) => e.preventDefault()}>Resolve a question</a>
                   <div style={{ height: '1px', background: 'var(--border)', margin: '4px 0' }}></div>
                   <button 
                     onClick={logout}
-                    style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 12px', fontSize: '13px', color: '#ff6b6b', background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: 'var(--radius-sm)', width: '100%', textAlign: 'left' }}
-                    onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,107,107,0.1)'}
-                    onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
+                    className="dropdown-item dropdown-item--danger"
                   >
                     <LogOut size={14} />
                     Logout

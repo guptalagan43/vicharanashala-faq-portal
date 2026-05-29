@@ -63,11 +63,11 @@
 /* Tab Switcher */
 .auth-tabs {
   display: flex;
-  background: rgba(0, 0, 0, 0.3);
+  background: var(--bg-input);
   border-radius: var(--radius-pill);
   padding: 4px;
   margin-bottom: 24px;
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--border);
 }
 
 .auth-tab-btn {
@@ -127,8 +127,8 @@
 }
 
 .form-input:focus {
-  border-color: rgba(240, 192, 64, 0.4);
-  background: rgba(22, 22, 31, 0.95);
+  border-color: var(--border-active);
+  background: var(--bg-card);
   box-shadow: 0 0 0 3px var(--accent-glow);
 }
 

@@ -4,6 +4,8 @@ import type { ReactNode } from 'react';
 export type Role = 'student' | 'admin';
 
 export interface UserProfile {
+  firstName?: string;
+  lastName?: string;
   alternateEmail?: string;
   mobile?: string;
   collegeName?: string;
