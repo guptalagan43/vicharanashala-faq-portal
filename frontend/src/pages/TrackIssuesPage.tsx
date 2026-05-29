@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { HelpCircle, ArrowLeft, Send, CheckCircle2, MessageSquare, Search } from 'lucide-react';
+import { HelpCircle, ArrowLeft, Send, CheckCircle2, MessageSquare, Search, Sparkles } from 'lucide-react';
 import { Link, useNavigate } from '@tanstack/react-router';
+import axios from 'axios';
 import '../styles/portal.css';
 
 interface Reply {
@@ -94,6 +95,7 @@ export const TrackIssuesPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'queue' | 'review' | 'resolved'>('all');
   const [replyText, setReplyText] = useState('');
+  const [isPublished, setIsPublished] = useState(false);
 
   if (!user) {
     navigate({ to: '/login' });
@@ -128,6 +130,21 @@ export const TrackIssuesPage: React.FC = () => {
   });
 
   const activeIssue = issues.find(i => i.id === selectedIssueId) || filteredIssues[0] || null;
+
+  const handlePublishAsFaq = async () => {
+    if (!activeIssue) return;
+    try {
+      await axios.post('http://localhost:3001/api/faqs', {
+        question: activeIssue.title,
+        answer: activeIssue.resolution || activeIssue.replies[activeIssue.replies.length - 1]?.text || activeIssue.description,
+        category: activeIssue.category || 'Other',
+      });
+      setIsPublished(true);
+      setTimeout(() => setIsPublished(false), 3000);
+    } catch (err) {
+      console.error('Failed to publish as FAQ:', err);
+    }
+  };
 
   // Track stats
   const totalRaised = issues.length;
@@ -353,6 +370,23 @@ export const TrackIssuesPage: React.FC = () => {
                     <p style={{ fontSize: '14px', color: 'var(--text-primary)', lineHeight: 1.5 }}>
                       {activeIssue.resolution}
                     </p>
+                    {user.role === 'admin' && (
+                      <div style={{ marginTop: '16px', display: 'flex', gap: '12px', alignItems: 'center' }}>
+                        <button
+                          type="button"
+                          onClick={handlePublishAsFaq}
+                          className="btn-accent"
+                          style={{ background: 'var(--accent)', color: 'var(--text-inverse)', padding: '10px 20px', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', fontWeight: 600, borderRadius: 'var(--radius-sm)', border: 'none', cursor: 'pointer' }}
+                        >
+                          <Sparkles size={14} /> Publish as FAQ
+                        </button>
+                        {isPublished && (
+                          <span style={{ fontSize: '13px', color: '#34c759', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            <CheckCircle2 size={14} /> Published to FAQ Portal!
+                          </span>
+                        )}
+                      </div>
+                    )}
                   </div>
                 )}
 

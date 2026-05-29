@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Trash2, Send, Sparkles, BookOpen, HelpCircle, Award, Clock, Mic, CheckCircle2 } from 'lucide-react';
+import axios from 'axios';
 
 interface Message {
   text: string;
@@ -35,9 +36,16 @@ export const YakshaChat: React.FC<YakshaChatProps> = ({ isModal, onClose }) => {
   const [isListening, setIsListening] = useState(false);
   const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
   const [voiceTranscript, setVoiceTranscript] = useState('');
+  const [faqs, setFaqs] = useState<any[]>([]);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
+
+  useEffect(() => {
+    axios.get('http://localhost:3001/api/faqs')
+      .then(res => setFaqs(res.data))
+      .catch(err => console.error('Failed to load FAQs for Yaksha:', err));
+  }, []);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -122,8 +130,50 @@ export const YakshaChat: React.FC<YakshaChatProps> = ({ isModal, onClose }) => {
     setIsTyping(true);
 
     setTimeout(() => {
+      // Find best match in FAQs
+      let matchedFaq: any = null;
+      let maxOverlap = 0;
+      
+      const queryClean = textToSend.toLowerCase().trim();
+      // Try direct substring match first
+      const direct = faqs.find(f => 
+        f.question.toLowerCase().includes(queryClean) || 
+        queryClean.includes(f.question.toLowerCase())
+      );
+
+      if (direct) {
+        matchedFaq = direct;
+      } else {
+        // Keyword overlap
+        const stopWords = new Set(['what', 'is', 'the', 'about', 'for', 'a', 'an', 'in', 'on', 'of', 'to', 'and', 'how', 'do', 'i', 'vins']);
+        const queryWords = queryClean.split(/\s+/).filter(w => w.length > 2 && !stopWords.has(w));
+        
+        if (queryWords.length > 0) {
+          faqs.forEach(f => {
+            const faqClean = f.question.toLowerCase();
+            const faqWords = faqClean.split(/\s+/).filter((w: string) => w.length > 2 && !stopWords.has(w));
+            const overlap = queryWords.filter(w => faqWords.includes(w)).length;
+            if (overlap > maxOverlap) {
+              maxOverlap = overlap;
+              matchedFaq = f;
+            }
+          });
+        }
+      }
+
+      let responseText = `Thanks for your question about <strong>"${textToSend}"</strong>. This is a mock response — the live backend will query the FAQ database or use the LLM fallback (Minimax → Gemini) to generate a real answer.`;
+      
+      if (matchedFaq) {
+        // Increment view count in MongoDB
+        axios.patch(`http://localhost:3001/api/faqs/${matchedFaq._id}/view`).catch(err => {
+          console.error('Failed to increment view from Yaksha:', err);
+        });
+        
+        responseText = `Here is what I found in the FAQs:<br/><br/><strong>Q: ${matchedFaq.question}</strong><br/><br/>${matchedFaq.answer}`;
+      }
+
       const botResponse: Message = {
-        text: `Thanks for your question about <strong>"${textToSend}"</strong>. This is a mock response — the live backend will query the FAQ database or use the LLM fallback (Minimax → Gemini) to generate a real answer.`,
+        text: responseText,
         sender: 'bot',
         time: getTime(),
       };

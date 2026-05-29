@@ -48,8 +48,10 @@ export const FaqPage: React.FC = () => {
   const displayFaqs = useMemo(() => {
     switch (activeTab) {
       case 'most-asked':
-        // Sort by view_count descending
-        return [...faqs].sort((a, b) => (b.view_count || 0) - (a.view_count || 0));
+        // Sort by view_count descending and limit to top 10
+        return [...faqs]
+          .sort((a, b) => (b.view_count || 0) - (a.view_count || 0))
+          .slice(0, 10);
       case 'latest':
         // Sort by _id descending (ObjectId creation order)
         return [...faqs].sort((a, b) => b._id.localeCompare(a._id));
@@ -163,14 +165,14 @@ export const FaqPage: React.FC = () => {
     }, 100);
   };
 
+  const handleFaqAdded = (newFaq: FaqItem) => {
+    setFaqs((prev) => [newFaq, ...prev]);
+  };
+
   return (
     <>
       <section className="hero" id="hero">
         <div className="hero-inner">
-          {/* IIT Ropar pill badge */}
-          <div className="hero-pill-badge">
-            IIT Ropar · Applied AI · Open-Source
-          </div>
 
           {/* Sub-page Navigation Tabs */}
           <div className="faq-subpage-tabs">
@@ -204,7 +206,7 @@ export const FaqPage: React.FC = () => {
             </button>
           </div>
 
-          <h1 className="hero-title" style={{ color: 'var(--accent)' }}>Frequently Asked<br />Questions</h1>
+          <h1 className="hero-title" style={{ color: 'var(--accent)' }}>Frequently Asked Questions</h1>
           <p className="hero-subtitle">
             Everything you need to know about the Vicharanashala Internship Programme (VINS).
             Search or browse by category below.
@@ -266,7 +268,7 @@ export const FaqPage: React.FC = () => {
         </div>
       )}
 
-      <div className="main-layout" id="main-layout">
+      <div className={`main-layout ${activeTab !== 'all' ? 'full-width-layout' : ''}`} id="main-layout">
         {activeTab === 'bookmarked' && !isAuthenticated ? (
           <div className="login-promo-card">
             <div className="promo-logo">
@@ -287,25 +289,27 @@ export const FaqPage: React.FC = () => {
           </div>
         ) : (
           <>
-            <aside className="toc-sidebar" id="toc-sidebar">
-              <div className="toc-sticky">
-                <h2 className="toc-heading">Contents</h2>
-                <nav className="toc-nav" id="toc-nav">
-                  {TOC_ITEMS.map(item => (
-                    <a
-                      key={item.section}
-                      href={`#${item.section}`}
-                      className={`toc-link${activeTocSection === item.section ? ' active' : ''}`}
-                      data-section={item.section}
-                      onClick={(e) => { e.preventDefault(); handleTocClick(item.section); }}
-                    >
-                      <span className="toc-num">{item.num}</span>
-                      {item.label}
-                    </a>
-                  ))}
-                </nav>
-              </div>
-            </aside>
+            {activeTab === 'all' && (
+              <aside className="toc-sidebar" id="toc-sidebar">
+                <div className="toc-sticky">
+                  <h2 className="toc-heading">Contents</h2>
+                  <nav className="toc-nav" id="toc-nav">
+                    {TOC_ITEMS.map(item => (
+                      <a
+                        key={item.section}
+                        href={`#${item.section}`}
+                        className={`toc-link${activeTocSection === item.section ? ' active' : ''}`}
+                        data-section={item.section}
+                        onClick={(e) => { e.preventDefault(); handleTocClick(item.section); }}
+                      >
+                        <span className="toc-num">{item.num}</span>
+                        {item.label}
+                      </a>
+                    ))}
+                  </nav>
+                </div>
+              </aside>
+            )}
 
             <FaqDashboard
               faqs={displayFaqs}
@@ -319,6 +323,7 @@ export const FaqPage: React.FC = () => {
               onToggleBookmark={handleToggleBookmark}
               isAdmin={isAdmin}
               activeTab={activeTab}
+              onFaqAdded={handleFaqAdded}
             />
           </>
         )}

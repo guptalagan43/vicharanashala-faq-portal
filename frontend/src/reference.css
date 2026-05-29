@@ -3324,5 +3324,12 @@ mark.highlight,
   border-color: rgba(202, 138, 4, 0.15);
 }
 
+/* Layout Overrides for sub-pages */
+.main-layout.full-width-layout {
+  display: block;
+  max-width: var(--content-max);
+  margin: 32px auto 0;
+}
+
 
 
