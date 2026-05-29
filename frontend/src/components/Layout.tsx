@@ -29,7 +29,7 @@ export const Layout: React.FC = () => {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', position: 'relative', overflowX: 'hidden' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', position: 'relative' }}>
       <div className="cursor-glow" style={{ transform: `translate3d(${mousePos.x}px, ${mousePos.y}px, 0)` }} />
       <Header />
       <main style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 2 }}>
